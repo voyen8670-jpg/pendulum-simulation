@@ -5,148 +5,135 @@
   <title>Kho Thí Nghiệm Mô Phỏng</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: #f9f9f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
       margin: 0;
-      padding: 20px;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
     }
-    h1 {
-      color: #333;
+    header {
+      text-align: center;
+      padding: 30px 10px 10px;
+      color: white;
+    }
+    header h1 {
+      font-size: 2.5em;
+      background: linear-gradient(90deg, #ff8a00, #e52e71);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin: 0;
+    }
+    header p {
+      font-size: 1.2em;
+      color: #fff;
+      margin-top: 5px;
     }
     .menu {
       margin: 20px 0;
+      display: flex;
+      gap: 15px;
+      flex-wrap: wrap;
+      justify-content: center;
     }
     .menu button {
-      margin: 5px;
-      padding: 10px 20px;
+      padding: 12px 25px;
       font-size: 16px;
       border: none;
-      border-radius: 8px;
+      border-radius: 10px;
       background: #4CAF50;
       color: white;
       cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
     .menu button:hover {
+      transform: scale(1.05);
       background: #45a049;
     }
     #canvas-holder {
-      margin-top: 20px;
+      margin: 20px;
+      background: white;
+      border-radius: 15px;
+      padding: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.25);
+    }
+    canvas {
+      border-radius: 10px;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
 </head>
 <body>
-  <h1>Kho Thí Nghiệm Mô Phỏng</h1>
-  <p>Chọn thí nghiệm để bắt đầu:</p>
+  <header>
+    <h1>Kho Thí Nghiệm Mô Phỏng</h1>
+    <p>Chọn thí nghiệm bạn muốn trải nghiệm</p>
+  </header>
+
   <div class="menu">
     <button onclick="startExperiment('pendulum')">🔗 Con lắc đơn</button>
-    <button onclick="startExperiment('freefall')">🔗 Rơi tự do</button>
+    <button onclick="startExperiment('freefall')">🌍 Rơi tự do</button>
   </div>
+
   <div id="canvas-holder"></div>
 
   <script>
     let currentSketch;
 
     function startExperiment(type) {
-      // Xoá toàn bộ nội dung cũ trong canvas-holder (canvas + nút)
       document.getElementById("canvas-holder").innerHTML = "";
-
-      if (currentSketch) {
-        currentSketch.remove();
-      }
-
-      if (type === "pendulum") {
-        currentSketch = new p5(pendulumSketch, "canvas-holder");
-      } else if (type === "freefall") {
-        currentSketch = new p5(freefallSketch, "canvas-holder");
-      }
+      if (currentSketch) currentSketch.remove();
+      if (type === "pendulum") currentSketch = new p5(pendulumSketch, "canvas-holder");
+      if (type === "freefall") currentSketch = new p5(freefallSketch, "canvas-holder");
     }
 
     // ---------------- CON LẮC ----------------
     const pendulumSketch = (p) => {
       let angle, aVel, aAcc, r = 150;
       let g = 0.4;
-
       p.setup = () => {
         p.createCanvas(400, 400).parent("canvas-holder");
-        angle = p.PI / 4;
-        aVel = 0;
-        aAcc = 0;
+        angle = p.PI / 4; aVel = 0; aAcc = 0;
       };
-
       p.draw = () => {
-        p.background(220);
-        let originX = p.width / 2;
-        let originY = 50;
-        let bobX = originX + r * p.sin(angle);
-        let bobY = originY + r * p.cos(angle);
+        p.background(240);
+        let ox = p.width/2, oy = 50;
+        let bx = ox + r * p.sin(angle), by = oy + r * p.cos(angle);
 
         aAcc = (-1 * g / r) * p.sin(angle);
-        aVel += aAcc;
-        aVel *= 0.99; // ma sát
-        angle += aVel;
+        aVel += aAcc; aVel *= 0.99; angle += aVel;
 
-        // vẽ dây
-        p.stroke(0);
-        p.line(originX, originY, bobX, bobY);
-
-        // vẽ quả nặng
-        p.fill(200, 0, 0);
-        p.ellipse(bobX, bobY, 40, 40);
+        p.stroke(0); p.line(ox, oy, bx, by);
+        p.fill(200, 0, 0); p.ellipse(bx, by, 40, 40);
       };
     };
 
     // ---------------- RƠI TỰ DO ----------------
     const freefallSketch = (p) => {
-      let y, v, g = 9.8;
-      let start = false;
-      let btn;
-      let startTime;
-
+      let y, v, g = 9.8, start = false, btn, startTime;
       p.setup = () => {
         p.createCanvas(400, 400).parent("canvas-holder");
-        y = 50;
-        v = 0;
-
-        btn = p.createButton("Bắt đầu");
+        y = 50; v = 0;
+        btn = p.createButton("▶ Bắt đầu");
         btn.parent("canvas-holder");
-        btn.mousePressed(() => {
-          start = true;
-          y = 50;
-          v = 0;
-          startTime = p.millis();
-        });
+        btn.style("margin-top","10px");
+        btn.mousePressed(() => { start = true; y=50; v=0; startTime=p.millis(); });
       };
-
       p.draw = () => {
-        p.background(220);
-
-        // mặt đất
-        p.line(0, p.height-50, p.width, p.height-50);
-
+        p.background(240);
+        p.line(0,p.height-50,p.width,p.height-50);
         if (start) {
-          let dt = (p.deltaTime / 1000);
-          v += g * dt * 30; // scale gia tốc cho dễ nhìn
-          y += v * dt;
-
-          if (y > p.height-70) {
-            y = p.height-70;
-            v = 0;
-            start = false;
-          }
+          let dt = p.deltaTime/1000;
+          v += g*dt*30; y += v*dt;
+          if (y > p.height-70) { y = p.height-70; v=0; start=false; }
         }
-
-        // quả bóng
-        p.fill(50, 100, 200);
-        p.ellipse(p.width/2, y, 40, 40);
-
-        // thời gian
+        p.fill(50,100,200); p.ellipse(p.width/2,y,40,40);
         if (startTime) {
-          let t = (p.millis() - startTime) / 1000;
-          p.fill(0);
-          p.textSize(16);
-          p.text("Thời gian: " + t.toFixed(2) + "s", 10, 20);
+          let t=(p.millis()-startTime)/1000;
+          p.fill(0); p.textSize(16);
+          p.text("Thời gian: "+t.toFixed(2)+"s",10,20);
         }
       };
     };
