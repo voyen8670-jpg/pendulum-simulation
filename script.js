@@ -1,122 +1,50 @@
 let originX, originY;
-let bobX, bobY;
-let angle, angleVel = 0, angleAcc = 0;
-let r = 150;   // length
-let g = 1;     // gravity
-let running = false;
-
-let chart, time = 0;
+let length = 200;
+let angle = Math.PI / 4;
+let aVelocity = 0;
+let aAcceleration = 0;
+let gravity = 1;
+let isRunning = true;
 
 function setup() {
-  let canvas = createCanvas(400, 400);
-  canvas.parent("sketch-holder");
+  let canvas = createCanvas(500, 400);
+  canvas.parent(document.body);
   originX = width / 2;
-  originY = 50;
-  angle = radians(30); // default 30°
-
-  setupChart();
+  originY = 100;
 }
 
 function draw() {
-  background(240);
+  background(20, 20, 30);
 
-  if (running) {
-    angleAcc = (-g / r) * sin(angle);
-    angleVel += angleAcc;
-    angle += angleVel;
-    angleVel *= 0.99; // damping
-    time += deltaTime / 1000;
-
-    addData(chart, time.toFixed(2), degrees(angle).toFixed(2));
+  if (isRunning) {
+    let force = (-1 * gravity / length) * sin(angle);
+    aAcceleration = force;
+    aVelocity += aAcceleration;
+    angle += aVelocity;
+    aVelocity *= 0.99; // ma sát nhẹ
   }
 
-  bobX = originX + r * sin(angle);
-  bobY = originY + r * cos(angle);
+  let x = originX + length * sin(angle);
+  let y = originY + length * cos(angle);
 
-  stroke(0);
-  line(originX, originY, bobX, bobY);
-  fill(50);
-  circle(bobX, bobY, 30);
+  stroke(255);
+  strokeWeight(2);
+  fill(255, 150, 0);
+  line(originX, originY, x, y);
+  ellipse(x, y, 40, 40);
+
+  // Cập nhật thông số
+  document.getElementById("info").innerText =
+    `⏱ Tốc độ góc: ${aVelocity.toFixed(2)} rad/s | Góc hiện tại: ${(degrees(angle)).toFixed(2)}°`;
 }
 
-function mousePressed() {
-  if (dist(mouseX, mouseY, bobX, bobY) < 15) {
-    running = false;
-    angleVel = 0;
-  }
-}
-
-function mouseDragged() {
-  if (dist(mouseX, mouseY, bobX, bobY) < 50) {
-    angle = atan2(mouseX - originX, mouseY - originY) * -1;
-  }
-}
-
-function mouseReleased() {
-  running = true;
-}
-
-// Control buttons
-function startPendulum() { running = true; }
-function stopPendulum() { running = false; }
 function resetPendulum() {
-  running = false;
-  angle = radians(document.getElementById("angleSlider").value);
-  angleVel = 0;
-  time = 0;
-  resetChart();
+  length = parseFloat(document.getElementById("length").value);
+  angle = radians(parseFloat(document.getElementById("angle").value));
+  gravity = parseFloat(document.getElementById("gravity").value);
+  aVelocity = 0;
 }
 
-// Sliders
-document.getElementById("lenSlider").oninput = function () {
-  r = this.value;
-  document.getElementById("lenVal").innerText = r;
-};
-document.getElementById("gravSlider").oninput = function () {
-  g = this.value;
-  document.getElementById("gravVal").innerText = g;
-};
-document.getElementById("angleSlider").oninput = function () {
-  document.getElementById("angleVal").innerText = this.value;
-};
-
-// Chart.js setup
-function setupChart() {
-  let ctx = document.getElementById("angleChart").getContext("2d");
-  chart = new Chart(ctx, {
-    type: "line",
-    data: {
-      labels: [],
-      datasets: [{
-        label: "Angle (°)",
-        data: [],
-        borderColor: "blue",
-        borderWidth: 2,
-        fill: false,
-      }]
-    },
-    options: {
-      responsive: true,
-      scales: {
-        x: { title: { display: true, text: "Time (s)" } },
-        y: { title: { display: true, text: "Angle (°)" } }
-      }
-    }
-  });
+function togglePendulum() {
+  isRunning = !isRunning;
 }
-
-function addData(chart, label, data) {
-  if (chart.data.labels.length > 50) {
-    chart.data.labels.shift();
-    chart.data.datasets[0].data.shift();
-  }
-  chart.data.labels.push(label);
-  chart.data.datasets[0].data.push(data);
-  chart.update();
-}
-
-function resetChart() {
-  chart.data.labels = [];
-  chart.data.datasets[0].data = [];
-  chart.update();
-      }
