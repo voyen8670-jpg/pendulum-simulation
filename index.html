@@ -49,9 +49,13 @@
     let currentSketch;
 
     function startExperiment(type) {
+      // Xoá toàn bộ nội dung cũ trong canvas-holder (canvas + nút)
+      document.getElementById("canvas-holder").innerHTML = "";
+
       if (currentSketch) {
-        currentSketch.remove(); // xoá canvas cũ
+        currentSketch.remove();
       }
+
       if (type === "pendulum") {
         currentSketch = new p5(pendulumSketch, "canvas-holder");
       } else if (type === "freefall") {
@@ -65,7 +69,7 @@
       let g = 0.4;
 
       p.setup = () => {
-        p.createCanvas(400, 400);
+        p.createCanvas(400, 400).parent("canvas-holder");
         angle = p.PI / 4;
         aVel = 0;
         aAcc = 0;
@@ -101,7 +105,7 @@
       let startTime;
 
       p.setup = () => {
-        p.createCanvas(400, 400);
+        p.createCanvas(400, 400).parent("canvas-holder");
         y = 50;
         v = 0;
 
@@ -123,7 +127,7 @@
 
         if (start) {
           let dt = (p.deltaTime / 1000);
-          v += g * dt * 30;
+          v += g * dt * 30; // scale gia tốc cho dễ nhìn
           y += v * dt;
 
           if (y > p.height-70) {
@@ -149,4 +153,3 @@
   </script>
 </body>
 </html>
-
