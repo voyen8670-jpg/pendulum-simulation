@@ -2,13 +2,66 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pendulum Simulation</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pendulum Simulation - Advanced</title>
+  <!-- p5.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.0/p5.min.js"></script>
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      text-align: center;
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+    }
+    canvas {
+      border: 2px solid #333;
+      margin-top: 10px;
+    }
+    .controls {
+      margin: 15px;
+    }
+    .slider {
+      margin: 10px;
+    }
+    #chartContainer {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+    }
+  </style>
 </head>
 <body>
-  <h1>Pendulum Simulation</h1>
+  <h1>Pendulum Simulation (Advanced)</h1>
+
+  <!-- Controls -->
+  <div class="controls">
+    <button onclick="startPendulum()">Start</button>
+    <button onclick="stopPendulum()">Stop</button>
+    <button onclick="resetPendulum()">Reset</button>
+    <div class="slider">
+      <label>Length: <span id="lenVal">150</span></label>
+      <input type="range" id="lenSlider" min="50" max="300" value="150">
+    </div>
+    <div class="slider">
+      <label>Gravity: <span id="gravVal">1</span></label>
+      <input type="range" id="gravSlider" min="0.1" max="5" step="0.1" value="1">
+    </div>
+    <div class="slider">
+      <label>Initial Angle: <span id="angleVal">30</span>°</label>
+      <input type="range" id="angleSlider" min="-90" max="90" value="30">
+    </div>
+  </div>
+
+  <!-- Simulation Canvas -->
   <div id="sketch-holder"></div>
-  <script src="sketch.js"></script>
+
+  <!-- Chart -->
+  <div id="chartContainer">
+    <canvas id="angleChart"></canvas>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
+
