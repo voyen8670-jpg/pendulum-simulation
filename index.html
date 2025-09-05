@@ -5,79 +5,79 @@
   <title>Kho Thí Nghiệm Mô Phỏng</title>
   <style>
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(135deg, #74ebd5 0%, #9face6 100%);
       margin: 0;
-      padding: 0;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      display: flex;
+      height: 100vh;
+      background: #f0f2f5;
+    }
+    /* Sidebar */
+    .sidebar {
+      width: 220px;
+      background: linear-gradient(180deg, #4facfe, #00f2fe);
+      color: white;
+      padding: 20px;
+      box-shadow: 2px 0 8px rgba(0,0,0,0.2);
+    }
+    .sidebar h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .sidebar button {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: none;
+      border-radius: 8px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+    .sidebar button:hover {
+      background: rgba(255,255,255,0.4);
+      transform: scale(1.05);
+    }
+    /* Main content */
+    .main {
+      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-height: 100vh;
+      padding: 20px;
     }
-    header {
-      text-align: center;
-      padding: 30px 10px 10px;
-      color: white;
-    }
-    header h1 {
-      font-size: 2.5em;
-      background: linear-gradient(90deg, #ff8a00, #e52e71);
+    .main h1 {
+      margin: 10px 0 20px;
+      background: linear-gradient(90deg,#ff8a00,#e52e71);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin: 0;
-    }
-    header p {
-      font-size: 1.2em;
-      color: #fff;
-      margin-top: 5px;
-    }
-    .menu {
-      margin: 20px 0;
-      display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .menu button {
-      padding: 12px 25px;
-      font-size: 16px;
-      border: none;
-      border-radius: 10px;
-      background: #4CAF50;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
-    }
-    .menu button:hover {
-      transform: scale(1.05);
-      background: #45a049;
     }
     #canvas-holder {
-      margin: 20px;
       background: white;
-      border-radius: 15px;
+      border-radius: 12px;
       padding: 15px;
       box-shadow: 0 6px 15px rgba(0,0,0,0.25);
-    }
-    canvas {
-      border-radius: 10px;
+      margin-top: 10px;
     }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/p5@1.9.0/lib/p5.min.js"></script>
 </head>
 <body>
-  <header>
-    <h1>Kho Thí Nghiệm Mô Phỏng</h1>
-    <p>Chọn thí nghiệm bạn muốn trải nghiệm</p>
-  </header>
-
-  <div class="menu">
-    <button onclick="startExperiment('pendulum')">🔗 Con lắc đơn</button>
-    <button onclick="startExperiment('freefall')">🌍 Rơi tự do</button>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>🔬 Thí nghiệm</h2>
+    <button onclick="startExperiment('pendulum')">Con lắc đơn</button>
+    <button onclick="startExperiment('freefall')">Rơi tự do</button>
+    <!-- Sau này có thể thêm -->
+    <!-- <button onclick="startExperiment('lens')">Thấu kính hội tụ</button> -->
   </div>
 
-  <div id="canvas-holder"></div>
+  <!-- Main content -->
+  <div class="main">
+    <h1>Kho Thí Nghiệm Mô Phỏng</h1>
+    <div id="canvas-holder"></div>
+  </div>
 
   <script>
     let currentSketch;
@@ -85,11 +85,12 @@
     function startExperiment(type) {
       document.getElementById("canvas-holder").innerHTML = "";
       if (currentSketch) currentSketch.remove();
+
       if (type === "pendulum") currentSketch = new p5(pendulumSketch, "canvas-holder");
       if (type === "freefall") currentSketch = new p5(freefallSketch, "canvas-holder");
     }
 
-    // ---------------- CON LẮC ----------------
+    // ---------------- Con lắc ----------------
     const pendulumSketch = (p) => {
       let angle, aVel, aAcc, r = 150;
       let g = 0.4;
@@ -110,7 +111,7 @@
       };
     };
 
-    // ---------------- RƠI TỰ DO ----------------
+    // ---------------- Rơi tự do ----------------
     const freefallSketch = (p) => {
       let y, v, g = 9.8, start = false, btn, startTime;
       p.setup = () => {
